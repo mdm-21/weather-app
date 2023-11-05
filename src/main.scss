@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;500;600;700&display=swap');
+@import "src/assets/styles/variables";
+
+:root {
+  font-family: 'Titillium Web', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $main-bg-color;
+  color: $main-font-color;
+}

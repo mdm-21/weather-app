@@ -1,0 +1,75 @@
+@import "src/assets/styles/variables";
+
+.home {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+
+  &__container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__left-side {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    padding: 15px;
+    margin: 15px;
+
+    //border: 1px solid $main-border-color;
+    border-radius: $border-radius;
+    background-color: $secondary-bg-color;
+  }
+
+  &__search-container {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  &__loader {
+    margin-top: 50px;
+  }
+
+  &__location-button {
+    background-color: transparent;
+    border: none;
+  }
+
+  &__location-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  &__right-side {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 15px;
+    margin: 15px 15px 15px 0;
+
+    //border: 1px solid $main-border-color;
+    border-radius: $border-radius;
+    background-color: $secondary-bg-color;
+
+    &__buttons {
+    }
+
+    &__button {
+      border: none;
+      background-color: transparent;
+      font-size: 20px;
+      color: $main-font-color;
+      cursor: pointer;
+      transition: 0.3s;
+      border-radius: 5px;
+
+      &--selected {
+        transition: 0.3s;
+        color: $secondary-font-color;
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+@import "src/assets/styles/variables";
+
+.city-search {
+  display: flex;
+
+  //background-color: $main-bg-color;
+  border-radius: 5px;
+
+  position: relative;
+
+  &__input {
+    width: 250px;
+    height: 30px;
+    background-color: $main-bg-color;
+    border: 0.5px solid $main-font-color;
+    color: $secondary-font-color;
+    margin: 0.5px;
+    border-radius: 5px;
+    font-size: 15px;
+    padding-left: 15px;
+    padding-right: 40px;
+    outline: none;
+    text-transform: capitalize;
+
+    &::placeholder {
+      color: $main-font-color;
+    }
+  }
+
+  &__input:focus {
+    margin: 0;
+    border: 1px solid $main-font-color;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 1px 1px;
+  }
+
+  &__button {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.b {
+  width: 100px;
+}

@@ -1,0 +1,32 @@
+@import "src/assets/styles/variables";
+
+.current-weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-top: 20%;
+
+  &__icon {
+    width: 175px;
+    height: 175px;
+  }
+
+  &__temp-number {
+    font-size: 70px;
+    margin: -15px 0;
+  }
+
+  &__name {
+    font-size: 30px;
+    font-weight: 500;
+  }
+
+  &__location-info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 20px;
+  }
+}
