@@ -1,0 +1,37 @@
+@import "src/assets/styles/variables";
+
+.weather-details {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 50px;
+    width: 25%;
+    height: 120px;
+    border: 0.5px solid $main-border-color;
+    background-color: $main-bg-color;
+    border-radius: 5px;
+
+    &--name {
+      font-size: 16px;
+    }
+
+    &--value {
+      font-size: 24px;
+    }
+
+    &--icon {
+      height: 60px;
+      width: 60px;
+    }
+  }
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+  }
+}
