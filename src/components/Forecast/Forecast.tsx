@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ForecastData } from './IForecast.ts';
+import { ForecastData, ForecastList } from './IForecast.ts';
 import { APIKEY, baseForecastUrl } from '../../service/API.ts';
 import { weatherIcons } from '../../utils/weatherIcons.ts';
 import { dayNames } from '../../utils/dayNames.ts';
 
 import { Loader } from '../Loader';
 
+import arrow_right from '../../assets/images/arrow_right.svg';
+import arrow_left from '../../assets/images/arrow_left.svg';
+import show_more from '../../assets/images/show_more.svg';
+
 import './Forecast.scss';
+import { WeatherDetails } from '../WeatherDetails';
 
 interface ForecastCoord {
   lat: number;
@@ -22,6 +27,10 @@ export const Forecast = ({ lat, lon, unitsType }: ForecastCoord) => {
   const [tempType, setTempType] = useState<string>('°C');
   const [removeVisibleItems, setRemoveVisibleItems] = useState(0);
   const [addVisibleItems, setAddVisibleItems] = useState(4);
+  const [selectedDayData, setSelectedDayData] = useState<ForecastList | null>(
+    null,
+  );
+  const [activeItemIndex, setActiveItemIndex] = useState<number>(-1);
 
   useEffect(() => {
     const fetchForecastData = async () => {
@@ -70,17 +79,36 @@ export const Forecast = ({ lat, lon, unitsType }: ForecastCoord) => {
   const getDayName = (dateString: string) => {
     const date = new Date(dateString);
     const dayIndex = date.getDay();
-    return dayNames[dayIndex];
+    return `${dayNames[dayIndex]}, ${date.getDate()}.${date.getMonth() + 1}`;
   };
 
-  function formatDateTime(dateTimeString: string) {
+  const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const hours = date.getHours();
+    let hours = date.getHours();
     const minutes = date.getMinutes();
-    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}, ${day}.${month} `;
-  }
+    let period = 'AM';
+
+    if (hours >= 12) {
+      period = 'PM';
+      if (hours > 12) {
+        hours -= 12;
+      }
+    }
+
+    return `${hours}:${
+      minutes < 10 ? '0' : ''
+    }${minutes} ${period}, ${date.getDate()}.${date.getMonth() + 1}`;
+  };
+
+  const handleShowMoreClick = (selectedDay: ForecastList, index: number) => {
+    if (activeItemIndex === index) {
+      setSelectedDayData(null);
+      setActiveItemIndex(-1);
+    } else {
+      setSelectedDayData(selectedDay);
+      setActiveItemIndex(index);
+    }
+  };
 
   return (
     <div className="forecast">
@@ -90,17 +118,25 @@ export const Forecast = ({ lat, lon, unitsType }: ForecastCoord) => {
         </div>
       ) : forecastData && forecastDailyData ? (
         <div className="forecast__container">
-          <div className="forecast__b">
+          <div className="forecast__container--top">
             <button
+              className={
+                removeVisibleItems === 0
+                  ? 'forecast__buttons forecast__buttons--disabled'
+                  : 'forecast__buttons'
+              }
               onClick={() => {
                 if (removeVisibleItems > 0) {
                   setRemoveVisibleItems(removeVisibleItems - 4);
                   setAddVisibleItems(addVisibleItems - 4);
                 }
               }}
-              // disabled={removeVisibleItems === 0}
             >
-              Попередні
+              <img
+                src={arrow_left}
+                alt="swipe-left"
+                className="forecast__buttons--item"
+              />
             </button>
             {forecastData.list
               .slice(removeVisibleItems, addVisibleItems)
@@ -126,19 +162,28 @@ export const Forecast = ({ lat, lon, unitsType }: ForecastCoord) => {
                 </div>
               ))}
             <button
+              className={
+                addVisibleItems >= forecastData.list.length
+                  ? 'forecast__buttons forecast__buttons--disabled'
+                  : 'forecast__buttons'
+              }
               onClick={() => {
                 if (addVisibleItems < forecastData.list.length) {
                   setRemoveVisibleItems(removeVisibleItems + 4);
                   setAddVisibleItems(addVisibleItems + 4);
                 }
               }}
-              // disabled={addVisibleItems >= forecastData.list.length}
             >
-              Наступні
+              <img
+                src={arrow_right}
+                alt="swipe-right"
+                className="forecast__buttons--item"
+              />
             </button>
           </div>
 
-          <div className="forecast__b">
+          <span>5-day forecast</span>
+          <div className="forecast__container--top">
             {forecastDailyData.list.map((item, index) => (
               <div key={index} className="forecast__item">
                 <span className="forecast__item--time">
@@ -162,9 +207,40 @@ export const Forecast = ({ lat, lon, unitsType }: ForecastCoord) => {
                 <span className="forecast__item--weather">
                   {item.weather[0].main}
                 </span>
+
+                <button
+                  className={`forecast__item--button ${
+                    activeItemIndex === index
+                      ? 'forecast__item--button--active'
+                      : ''
+                  }`}
+                  onClick={() => handleShowMoreClick(item, index)}
+                >
+                  <img
+                    src={show_more}
+                    className="forecast__item--show-more"
+                    alt="show more"
+                  />
+                </button>
               </div>
             ))}
           </div>
+
+          {selectedDayData && (
+            <WeatherDetails
+              feels_like={selectedDayData.main.feels_like}
+              temp_min={selectedDayData.main.temp_min}
+              temp_max={selectedDayData.main.temp_max}
+              sunrise={selectedDayData.main.feels_like}
+              sunset={selectedDayData.main.feels_like}
+              humidity={selectedDayData.main.humidity}
+              pressure={selectedDayData.main.pressure}
+              wind={selectedDayData.wind.speed}
+              visibility={selectedDayData.visibility}
+              timezone={selectedDayData.main.feels_like}
+              unitsType={unitsType}
+            />
+          )}
         </div>
       ) : null}
     </div>

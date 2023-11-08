@@ -2,10 +2,7 @@
 
 .city-search {
   display: flex;
-
-  //background-color: $main-bg-color;
-  border-radius: 5px;
-
+  align-items: center;
   position: relative;
 
   &__input {
@@ -25,32 +22,37 @@
     &::placeholder {
       color: $main-font-color;
     }
-  }
 
-  &__input:focus {
-    margin: 0;
-    border: 1px solid $main-font-color;
-    box-shadow: rgba(0, 0, 0, 0.16) 0 1px 1px;
+    &:focus {
+      margin: 0;
+      border: 1px solid $active-bg-color;
+      box-shadow: rgba(0, 0, 0, 0.16) 0 1px 1px;
+    }
   }
 
   &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 30px;
     height: 30px;
     position: absolute;
     right: 3px;
-    top: 50%;
-    transform: translateY(-50%);
+    border: 0;
+    //border-top: 0;
+    //border-right: 0;
+    //border-bottom: 0;
+    //border-left: 0.5px solid $main-font-color;
     background: none;
-    border: none;
     cursor: pointer;
+
+    //&:hover {
+    //  background-color: #FFFFFF;
+    //}
   }
 
   &__icon {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
   }
-}
-
-.b {
-  width: 100px;
 }
