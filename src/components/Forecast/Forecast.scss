@@ -2,8 +2,8 @@
 
 .forecast {
   display: flex;
-  text-align: center;
-  margin: 30px 0;
+  align-items: center;
+  justify-content: space-evenly;
 
   &__loader {
     margin-top: 50px;
@@ -15,27 +15,50 @@
     justify-content: space-evenly;
     width: 100%;
 
+    &--top,
+    &--bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      width: 100%;
+    }
   }
 
-  &__b {
+  &__buttons {
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-  }
+    cursor: pointer;
+    padding: 10px 5px;
+    background-color: $third-bg-color;
+    border-radius: 5px;
+    transition: $main-transition;
+    border: 0.1px solid $main-border-color;
 
-  &__cl {
-    font-size: 50px;
-  }
 
-  &__sia {
+    &:hover:not(.forecast__buttons--disabled) {
+      background-color: $hover-bg-color;
+    }
+
+    &:active:not(.forecast__buttons--disabled) {
+      background-color: $active-bg-color;
+    }
+
+    &--item {
+      width: 30px;
+      height: 30px;
+    }
+
+    &--disabled {
+      background-color: $secondary-bg-color;
+    }
   }
 
   &__item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 15px;
+    padding: 15px;
     margin: 10px;
     width: 20%;
     background-color: $third-bg-color;
@@ -43,7 +66,7 @@
     border-radius: 5px;
 
     &--time {
-      font-size: 20px;
+      font-size: 18px;
     }
 
     &--temp {
@@ -57,6 +80,32 @@
 
     &--weather {
       font-size: 20px;
+    }
+
+    &--button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px 10px;
+      margin-top: 5px;
+      background-color: $third-bg-color;
+      border-radius: 5px;
+      transition: $main-transition;
+      border: 0.1px solid $main-border-color;
+
+      &:hover:not(.forecast__item--button--active) {
+        background-color: $hover-bg-color;
+      }
+
+      &--active {
+        background-color: $active-bg-color
+      }
+    }
+
+    &--show-more {
+      height: 15px;
+      width: 15px;
     }
   }
 }

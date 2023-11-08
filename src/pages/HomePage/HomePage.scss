@@ -18,7 +18,7 @@
     padding: 15px;
     margin: 15px;
 
-    //border: 1px solid $main-border-color;
+    border: 0.1px solid $main-border-color;
     border-radius: $border-radius;
     background-color: $secondary-bg-color;
   }
@@ -47,10 +47,11 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: max-content;
     padding: 15px;
     margin: 15px 15px 15px 0;
 
-    //border: 1px solid $main-border-color;
+    border: 0.1px solid $main-border-color;
     border-radius: $border-radius;
     background-color: $secondary-bg-color;
 
@@ -62,13 +63,15 @@
       background-color: transparent;
       font-size: 20px;
       color: $main-font-color;
+      padding: 5px 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: $main-transition;
       border-radius: 5px;
 
       &--selected {
-        transition: 0.3s;
         color: $secondary-font-color;
+        background: $third-bg-color;
+        border: 0.1px solid $main-border-color;
       }
     }
   }

@@ -7,21 +7,19 @@
 
   &__item {
     text-align: center;
-    font-size: 14px;
-    margin: 0 4px;
-    padding: 4px 6px;
+    font-size: 16px;
+    padding: 4px 5px;
     border: 0;
+    border-radius: 5px;
     background-color: transparent;
     color: $main-font-color;
     cursor: pointer;
-    transition: 0.3s;
+    transition: $main-transition;
 
     &--selected {
-      font-size: 20px;
-      transition: 0.3s;
-      background-color: $main-bg-color;
-      //border: 0.5px solid $main-font-color;
-      border-radius: 5px;
+      color: $secondary-font-color;
+      background: $third-bg-color;
+      border: 0.1px solid $main-border-color;
     }
   }
 }
