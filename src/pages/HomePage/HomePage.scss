@@ -21,6 +21,71 @@
     border: 0.1px solid $main-border-color;
     border-radius: $border-radius;
     background-color: $secondary-bg-color;
+
+    &__not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      &--image {
+        margin-top: 150px;
+      }
+
+      &--text {
+        margin-top: 10px;
+        font-size: 20px;
+      }
+
+      &--text-small {
+        font-size: 16px;
+      }
+    }
+
+    &__name {
+      font-size: 18px;
+      font-weight: normal;
+      margin: 30px auto 0;
+      padding: 5px 10px;
+
+      color: $secondary-font-color;
+      border: 0.1px solid $main-border-color;
+      border-radius: 5px;
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      margin-top: 30px;
+      padding: 0;
+
+      &--item {
+        box-sizing: border-box;
+        width: max-content;
+        list-style: none;
+        margin: 5px 0;
+        padding: 0 10px;
+        font-size: 20px;
+        text-transform: capitalize;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: 1s;
+        border: 0.1px solid $secondary-bg-color;
+
+        &:hover {
+          color: $secondary-font-color;
+          background: $third-bg-color;
+          border-color: $main-border-color;
+        }
+
+        &:active {
+          background-color: $active-bg-color;
+        }
+      }
+    }
   }
 
   &__search-container {
@@ -31,16 +96,6 @@
 
   &__loader {
     margin-top: 50px;
-  }
-
-  &__location-button {
-    background-color: transparent;
-    border: none;
-  }
-
-  &__location-image {
-    width: 30px;
-    height: 30px;
   }
 
   &__right-side {
@@ -54,9 +109,6 @@
     border: 0.1px solid $main-border-color;
     border-radius: $border-radius;
     background-color: $secondary-bg-color;
-
-    &__buttons {
-    }
 
     &__button {
       border: none;
@@ -76,3 +128,13 @@
     }
   }
 }
+
+//@keyframes RightSideArrive {
+//  from {
+//    transform: translateX(500px);
+//  }
+//
+//  to {
+//    transform: translateX(0);
+//  }
+//}

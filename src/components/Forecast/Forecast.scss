@@ -15,8 +15,12 @@
     justify-content: space-evenly;
     width: 100%;
 
-    &--top,
-    &--bottom {
+    &--name {
+      margin: 0 auto;
+      font-size: 18px;
+    }
+
+    &--item {
       display: flex;
       align-items: center;
       justify-content: space-evenly;
@@ -34,7 +38,6 @@
     border-radius: 5px;
     transition: $main-transition;
     border: 0.1px solid $main-border-color;
-
 
     &:hover:not(.forecast__buttons--disabled) {
       background-color: $hover-bg-color;
@@ -57,16 +60,18 @@
   &__item {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     padding: 15px;
     margin: 10px;
     width: 20%;
-    background-color: $third-bg-color;
+    //background-color: $third-bg-color;
     border: 0.1px solid $main-border-color;
     border-radius: 5px;
 
     &--time {
       font-size: 18px;
+      text-align: center;
     }
 
     &--temp {
@@ -107,5 +112,27 @@
       height: 15px;
       width: 15px;
     }
+  }
+
+  &__selected-name {
+    margin: 30px auto 0;
+    font-size: 20px;
+  }
+}
+
+.aaa {
+  animation: Top 5s;
+  z-index: 1;
+  position: absolute;
+  top: 650px;
+}
+
+@keyframes Top {
+  from {
+    transform: translateY(-500px);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }
