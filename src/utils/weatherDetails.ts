@@ -7,7 +7,7 @@ import pressure_icon from '../assets/images/pressure.png';
 import wind_icon from '../assets/images/windy.png';
 import sunrise_icon from '../assets/images/sunrise.png';
 import sunset_icon from '../assets/images/sunset.png';
-import { IWeatherInfo } from '../components/WeatherDetails/WeatherDetails.tsx';
+import { IWeatherInfo } from '../components/WeatherDetails/IWeatherInfo.ts';
 
 export const weatherDetails = ({
   feels_like,
@@ -34,7 +34,7 @@ export const weatherDetails = ({
   const formattedSunrise = formatLocalTime(sunrise, timezone);
   const formattedSunset = formatLocalTime(sunset, timezone);
 
-  const details = [
+  return [
     {
       label: 'Feels like',
       icon: feels_icon,
@@ -73,6 +73,4 @@ export const weatherDetails = ({
       value: `${visibility} m`,
     },
   ];
-
-  return details;
 };

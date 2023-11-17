@@ -1,6 +1,6 @@
-import {WeatherData} from "./IWeather.ts";
+import { IFormattedWeatherData } from '../pages/HomePage/IFormattedWeatherData.ts';
 
 export interface ICurrentWeather {
-	weatherData: WeatherData | null;
-	unitsType: string;
+  weatherData: IFormattedWeatherData | null;
+  unitsType: string;
 }

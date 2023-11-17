@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CitySearch,
   CurrentWeather,
@@ -10,21 +10,40 @@ import {
 } from '../../components';
 import { APIKEY, baseWeatherUrl } from '../../service/API.ts';
 import { Coord, WeatherData } from '../../types/IWeather.ts';
+import { IFormattedWeatherData } from './IFormattedWeatherData.ts';
 
 import './HomePage.scss';
+import { FormattedData } from './HomePageUtils.ts';
+import meme from '../../assets/images/peaceout-vanish.gif';
 
 export const HomePage = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [weatherData, setWeatherData] = useState<IFormattedWeatherData | null>(
+    null,
+  );
   const [city, setCity] = useState<string>('');
   const [unitsType, setUnitsType] = useState<string>('metric');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [cityNotFound, setCityNotFound] = useState<boolean>(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [currentWeatherOrForecast, setCurrentWeatherOrForecast] =
     useState(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const fetchWeatherData = async (url: string) => {
-    if (url === '') {
-      return;
+  const fetchWeatherData = async (
+    cityOrLocation: string | Coord,
+    newUnitsType?: string,
+  ) => {
+    let url;
+
+    if (typeof cityOrLocation === 'string') {
+      url = `${baseWeatherUrl}q=${cityOrLocation}&units=${
+        newUnitsType || unitsType
+      }&appid=${APIKEY}`;
+    } else {
+      const { lat, lon } = cityOrLocation;
+      url = `${baseWeatherUrl}lat=${lat}&lon=${lon}&units=${
+        newUnitsType || unitsType
+      }&appid=${APIKEY}`;
     }
 
     try {
@@ -33,6 +52,8 @@ export const HomePage = () => {
 
       if (!response.ok) {
         if (response.status === 404) {
+          setIsOpen(false);
+          setCityNotFound(true);
           throw new Error('City not found');
         } else {
           throw new Error('Network/server error');
@@ -40,9 +61,15 @@ export const HomePage = () => {
       }
 
       const data: WeatherData = await response.json();
-      setWeatherData(data);
+
+      const formattedWeatherData = data ? FormattedData(data) : null;
+      setWeatherData(formattedWeatherData);
+
       setCity(data.name);
-      console.log('API:', data);
+      setIsOpen(false);
+      setCityNotFound(false);
+
+      console.log('API:', formattedWeatherData);
 
       // HISTORY
       const isDuplicate = searchHistory.some(
@@ -53,7 +80,7 @@ export const HomePage = () => {
       if (!isDuplicate) {
         const updatedSearchHistory = [
           ...new Set([...searchHistory, data.name]),
-        ].slice(-10);
+        ].slice(-15);
         setSearchHistory(updatedSearchHistory);
         localStorage.setItem(
           'searchHistory',
@@ -67,25 +94,6 @@ export const HomePage = () => {
     }
   };
 
-  const fetchWeatherDataByCity = async (searchCity: string) => {
-    const url = `${baseWeatherUrl}q=${searchCity}&units=${unitsType}&appid=${APIKEY}`;
-    fetchWeatherData(url);
-  };
-
-  const fetchWeatherDataWithNewUnits = async (
-    city: string,
-    newUnitsType: string,
-  ) => {
-    const url = `${baseWeatherUrl}q=${city}&units=${newUnitsType}&appid=${APIKEY}`;
-    fetchWeatherData(url);
-  };
-
-  const fetchWeatherDataByLocation = async (location: Coord) => {
-    const { lat, lon } = location;
-    const url = `${baseWeatherUrl}lat=${lat}&lon=${lon}&units=${unitsType}&appid=${APIKEY}`;
-    fetchWeatherData(url);
-  };
-
   useEffect(() => {
     const storedHistory = localStorage.getItem('searchHistory');
     if (storedHistory) {
@@ -95,36 +103,11 @@ export const HomePage = () => {
 
   const locationSearch = () => {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          const { latitude: lat, longitude: lon } = position.coords;
-          const location = { lat, lon };
-          console.log('Location:', location);
-          fetchWeatherDataByLocation(location);
-        },
-        // function (error) {
-        // if (error.code === error.PERMISSION_DENIED) {
-        // 	const userConfirmed = window.confirm(
-        // 		"Доступ до геолокації відхилено. Бажаєте надати доступ ще раз?"
-        // 	);
-        //
-        // 	if (userConfirmed) {
-        // 		if ("geolocation" in navigator) {
-        // 			navigator.geolocation.getCurrentPosition(
-        // 				function (position) {
-        // 					const { latitude, longitude } = position.coords;
-        // 					const location = { latitude, longitude };
-        // 					console.log("Location:", location);
-        // 					fetchWeatherDataByLocation(location);
-        // 				},
-        // 			);
-        // 		}
-        // 	}
-        // } else {
-        // 	console.error("Помилка геолокації:", error);
-        // }
-        // }
-      );
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const { latitude: lat, longitude: lon } = position.coords;
+        const location = { lat, lon };
+        fetchWeatherData(location);
+      });
     } else {
       console.error('Геолокація не підтримується в вашому браузері');
     }
@@ -132,41 +115,36 @@ export const HomePage = () => {
 
   const handleTemperatureUnitChange = (unitType: string) => {
     setUnitsType(unitType);
-    fetchWeatherDataWithNewUnits(city, unitType);
+    fetchWeatherData(city, unitType);
   };
 
   const handleHistoryCityClick = (city: string) => {
     setCity(city);
-    fetchWeatherDataByCity(city);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      fetchWeatherDataByCity(city);
-    }
+    fetchWeatherData(city);
   };
 
   return (
-    <div className="home">
+    <main className="home">
       {isLoading ? (
         <div className="home__loader">
           <Loader />
         </div>
       ) : (
         <div className="home__container">
-          <div className="home__left-side">
+          <section className="home__left-side">
             <div className="home__search-container">
               <LocationAndHistoryButtons
                 searchHistory={searchHistory}
                 handleHistoryCityClick={handleHistoryCityClick}
                 locationSearch={locationSearch}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
               />
 
               <CitySearch
                 city={city}
                 setCity={setCity}
-                handleKeyDown={handleKeyDown}
-                handleSearch={() => fetchWeatherDataByCity(city)}
+                handleSearch={() => fetchWeatherData(city)}
               />
 
               <TemperatureButtons
@@ -175,62 +153,94 @@ export const HomePage = () => {
               />
             </div>
 
-            <CurrentWeather weatherData={weatherData} unitsType={unitsType} />
-          </div>
+            {isOpen ? (
+              <>
+                <h3 className="home__left-side__name">History</h3>
+                <ul className="home__left-side__list">
+                  {searchHistory.map((searchedCity, index) => (
+                    <li
+                      key={index}
+                      onClick={() => handleHistoryCityClick(searchedCity)}
+                      className="home__left-side__list--item"
+                    >
+                      {searchedCity}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : cityNotFound ? (
+              <div className="home__left-side__not-found">
+                <img
+                  src={meme}
+                  alt=""
+                  height={100}
+                  width={150}
+                  className="home__left-side__not-found--image"
+                />
 
-          {weatherData ? (
-            <div className="home__right-side">
-              <div>
-                <div className="home__right-side__buttons">
-                  <button
-                    onClick={() => setCurrentWeatherOrForecast(true)}
-                    className={
-                      currentWeatherOrForecast
-                        ? 'home__right-side__button home__right-side__button--selected'
-                        : 'home__right-side__button'
-                    }
-                  >
-                    Current Weather
-                  </button>
-                  <button
-                    onClick={() => setCurrentWeatherOrForecast(false)}
-                    className={
-                      !currentWeatherOrForecast
-                        ? 'home__right-side__button home__right-side__button--selected'
-                        : 'home__right-side__button'
-                    }
-                  >
-                    Forecast
-                  </button>
-                </div>
+                <span className="home__left-side__not-found--text">
+                  It seems your city no longer exists.
+                </span>
+                <span className="home__left-side__not-found--text-small">
+                  Or you just typed it wrong. Try again.
+                </span>
               </div>
-              {!currentWeatherOrForecast && weatherData ? (
+            ) : weatherData ? (
+              <CurrentWeather weatherData={weatherData} unitsType={unitsType} />
+            ) : null}
+          </section>
+
+          {weatherData && !cityNotFound ? (
+            <section className="home__right-side">
+              <div className="home__right-side__buttons">
+                <button
+                  onClick={() => setCurrentWeatherOrForecast(true)}
+                  className={
+                    currentWeatherOrForecast
+                      ? 'home__right-side__button home__right-side__button--selected'
+                      : 'home__right-side__button'
+                  }
+                >
+                  Current Weather
+                </button>
+                <button
+                  onClick={() => setCurrentWeatherOrForecast(false)}
+                  className={
+                    !currentWeatherOrForecast
+                      ? 'home__right-side__button home__right-side__button--selected'
+                      : 'home__right-side__button'
+                  }
+                >
+                  Forecast
+                </button>
+              </div>
+              {!currentWeatherOrForecast ? (
                 <Forecast
-                  lat={weatherData.coord.lat}
-                  lon={weatherData.coord.lon}
+                  lat={weatherData.lat}
+                  lon={weatherData.lon}
                   unitsType={unitsType}
                 />
               ) : (
                 <WeatherDetails
-                  feels_like={weatherData.main.feels_like}
-                  temp_min={weatherData.main.temp_min}
-                  temp_max={weatherData.main.temp_max}
-                  sunrise={weatherData.sys.sunrise}
-                  sunset={weatherData.sys.sunset}
-                  humidity={weatherData.main.humidity}
-                  pressure={weatherData.main.pressure}
-                  wind={weatherData.wind.speed}
+                  feels_like={weatherData.feels_like}
+                  temp_min={weatherData.temp_min}
+                  temp_max={weatherData.temp_max}
+                  sunrise={weatherData.sunrise}
+                  sunset={weatherData.sunset}
+                  humidity={weatherData.humidity}
+                  pressure={weatherData.pressure}
+                  wind={weatherData.speed}
                   visibility={weatherData.visibility}
                   timezone={weatherData.timezone}
                   unitsType={unitsType}
                 />
               )}
-            </div>
+            </section>
           ) : null}
         </div>
       )}
 
       {/*<WeatherMap />*/}
-    </div>
+    </main>
   );
 };
