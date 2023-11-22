@@ -1,26 +1,23 @@
-import { dayNames } from './dayNames.ts';
+import { DateTime, FixedOffsetZone } from 'luxon';
 
-export const formatTimeAndTime = (dateAndTime: string) => {
-  const date = new Date(dateAndTime);
-  const dayIndex = date.getDay();
+export const formatDateAndTime = (
+	secs: number | undefined,
+	zone: number | undefined,
+) => {
+	if (secs !== undefined && zone !== undefined) {
+		const offsetInMinutes = zone / 60;
+		const customZone = FixedOffsetZone.instance(offsetInMinutes);
+		const dateTime = DateTime.fromSeconds(secs).setZone(customZone);
 
-  const dayName = dayNames[dayIndex];
-  const formattedDate = `${date.getDate()}.${date.getMonth() + 1}`;
+		const date = dateTime.toFormat('cccc, dd.LL.yyyy');
+		const shortDate = dateTime.toFormat('dd.LL');
+		const time = dateTime.toFormat('hh:mm a');
 
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-  let period = 'AM';
-
-  if (hours >= 12) {
-    period = 'PM';
-    if (hours > 12) {
-      hours -= 12;
-    }
-  }
-
-  const formattedHours = `${hours}:${
-    minutes < 10 ? '0' : ''
-  }${minutes} ${period}`;
-
-  return { dayName, formattedDate, formattedHours };
+		return { date, shortDate, time };
+	}
+	return {
+		date: 'Unknown Date',
+		shortDate: 'Unknown Date',
+		time: 'Unknown Time',
+	};
 };

@@ -1,0 +1,14 @@
+@import "src/assets/styles/variables";
+
+.right-side {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: max-content;
+  padding: 15px;
+  margin: 15px 15px 15px 0;
+
+  border: 0.1px solid $main-border-color;
+  border-radius: $border-radius;
+  background-color: $secondary-bg-color;
+}

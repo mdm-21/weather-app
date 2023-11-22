@@ -1,0 +1,105 @@
+@import "src/assets/styles/variables";
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  padding: 15px;
+  margin: 15px;
+  position: relative;
+
+  border: 0.1px solid $main-border-color;
+  border-radius: $border-radius;
+  background-color: $secondary-bg-color;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+  }
+
+  &__name {
+    font-size: 18px;
+    font-weight: normal;
+    margin: 30px auto 0;
+    padding: 5px 10px;
+
+    color: $secondary-font-color;
+    border: 0.1px solid $main-border-color;
+    border-radius: 5px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 30px;
+    padding: 0;
+
+    &--item {
+      box-sizing: border-box;
+      width: max-content;
+      list-style: none;
+      margin: 5px 0;
+      padding: 0 10px;
+      font-size: 20px;
+      text-transform: capitalize;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 1s;
+      border: 0.1px solid $secondary-bg-color;
+
+      &:hover {
+        color: $secondary-font-color;
+        background: $third-bg-color;
+        border-color: $main-border-color;
+      }
+
+      &:active {
+        background-color: $active-bg-color;
+      }
+    }
+  }
+
+  &__loader {
+    margin-top: 50px;
+  }
+
+
+  &__footer {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+
+    &--icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    a {
+      padding: 5px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: $main-font-color;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    a:hover {
+      color: $secondary-hover-bg-color;
+    }
+  }
+}
