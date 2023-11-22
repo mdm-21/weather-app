@@ -6,3 +6,5 @@ export { CurrentWeather } from './CurrentWeather';
 export { Forecast } from './Forecast';
 export { Loader } from './Loader';
 export { WeatherMap } from './WeatherMap';
+export { NotFound } from './NotFound';
+export { CurrentWeatherOrForecastButtons } from './CurrentWeatherOrForecastButtons';

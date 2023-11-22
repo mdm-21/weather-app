@@ -1,90 +1,100 @@
-import React, { useState } from 'react';
-import { formatTimeAndTime } from '../../../../utils/formatDateAndTime.ts';
-import { weatherIcons } from '../../../../utils/weatherIcons.ts';
+import React, { useCallback, useState } from 'react';
+import {
+	formatDateAndTime,
+	formatTemperature,
+	weatherIcons,
+} from '../../../../utils';
 import arrow_right from '../../../../assets/images/arrow_right.svg';
 import arrow_left from '../../../../assets/images/arrow_left.svg';
+import { IHourlyForecast } from './IHourlyForecast.ts';
 
-import { IFormattedForecastData } from '../../IForecast.ts';
-
-interface HourlyForecastProps {
-  forecastData: IFormattedForecastData;
-  tempType: string;
-}
-
-export const HourlyForecast: React.FC<HourlyForecastProps> = ({
-  forecastData,
-  tempType,
+export const HourlyForecast: React.FC<IHourlyForecast> = ({
+	forecastData,
+	unitsType,
 }) => {
-  const [removeVisibleItems, setRemoveVisibleItems] = useState(0);
-  const [addVisibleItems, setAddVisibleItems] = useState(4);
+	const items = 4;
+	const [removeVisibleItems, setRemoveVisibleItems] = useState(0);
+	const [addVisibleItems, setAddVisibleItems] = useState(items);
 
-  return (
-    <>
-      <span className="forecast__container--name">Hourly Forecast</span>
+	const handleVisibleItems = useCallback(
+		(direction: number) => {
+			const newRemoveVisibleItems = removeVisibleItems + direction * items;
+			const newAddVisibleItems = addVisibleItems + direction * items;
 
-      <section className="forecast__container--item">
-        <button
-          className={
-            removeVisibleItems === 0
-              ? 'forecast__buttons forecast__buttons--disabled'
-              : 'forecast__buttons'
-          }
-          onClick={() => {
-            if (removeVisibleItems > 0) {
-              setRemoveVisibleItems(removeVisibleItems - 4);
-              setAddVisibleItems(addVisibleItems - 4);
-            }
-          }}
-        >
-          <img
-            src={arrow_left}
-            alt="swipe-left"
-            className="forecast__buttons--item"
-          />
-        </button>
-        {forecastData.list
-          .slice(removeVisibleItems, addVisibleItems)
-          .map((item, index) => (
-            <div key={index} className="forecast__item">
-              <span className="forecast__item--time">
-                {formatTimeAndTime(item.dt_txt).formattedHours}
-                <br />
-                {formatTimeAndTime(item.dt_txt).formattedDate}
-              </span>
-              <span className="forecast__item--temp">
-                {Math.round(item.temp)}
-                {tempType}
-              </span>
+			if (
+				newRemoveVisibleItems >= 0 &&
+				newAddVisibleItems <= forecastData.list.length
+			) {
+				setRemoveVisibleItems(newRemoveVisibleItems);
+				setAddVisibleItems(newAddVisibleItems);
+			}
+		},
+		[
+			removeVisibleItems,
+			setRemoveVisibleItems,
+			addVisibleItems,
+			setAddVisibleItems,
+			items,
+			forecastData.list.length,
+		],
+	);
 
-              <img
-                src={weatherIcons[item.main]}
-                className="forecast__item--icon"
-                alt=""
-              />
+	return (
+		<>
+			<span className='forecast__container--name'>Hourly Forecast</span>
 
-              <span className="forecast__item--weather">{item.main}</span>
-            </div>
-          ))}
-        <button
-          className={
-            addVisibleItems >= forecastData.list.length
-              ? 'forecast__buttons forecast__buttons--disabled'
-              : 'forecast__buttons'
-          }
-          onClick={() => {
-            if (addVisibleItems < forecastData.list.length) {
-              setRemoveVisibleItems(removeVisibleItems + 4);
-              setAddVisibleItems(addVisibleItems + 4);
-            }
-          }}
-        >
-          <img
-            src={arrow_right}
-            alt="swipe-right"
-            className="forecast__buttons--item"
-          />
-        </button>
-      </section>
-    </>
-  );
+			<section className='forecast__container--item'>
+				<button
+					className={
+						removeVisibleItems === 0
+							? 'forecast__buttons forecast__buttons--disabled'
+							: 'forecast__buttons'
+					}
+					onClick={() => handleVisibleItems(-1)}
+				>
+					<img
+						src={arrow_left}
+						alt='swipe-left'
+						className='forecast__buttons--item'
+					/>
+				</button>
+				{forecastData.list
+					.slice(removeVisibleItems, addVisibleItems)
+					.map((item, index) => (
+						<div key={index} className='forecast__item'>
+							<span className='forecast__item--time'>
+								{formatDateAndTime(item.dt, forecastData.timezone).time}
+								<br />
+								{formatDateAndTime(item.dt, forecastData.timezone).shortDate}
+							</span>
+							<span className='forecast__item--temp'>
+								{formatTemperature(item.temp, unitsType)}
+							</span>
+
+							<img
+								src={weatherIcons[item.main]}
+								className='forecast__item--icon'
+								alt=''
+							/>
+
+							<span className='forecast__item--weather'>{item.main}</span>
+						</div>
+					))}
+				<button
+					className={
+						addVisibleItems >= forecastData.list.length
+							? 'forecast__buttons forecast__buttons--disabled'
+							: 'forecast__buttons'
+					}
+					onClick={() => handleVisibleItems(1)}
+				>
+					<img
+						src={arrow_right}
+						alt='swipe-right'
+						className='forecast__buttons--item'
+					/>
+				</button>
+			</section>
+		</>
+	);
 };
