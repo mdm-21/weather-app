@@ -1,24 +1,36 @@
 import React from 'react';
-import "./TemperatureButtons.scss";
+import './TemperatureButtons.scss';
+import { ITemperatureButtonsProps } from './ITemperatureButtonsProps.ts';
+import { TemperatureUnits } from '../../types/TemperatureUnits.ts';
 
-interface TemperatureButtonsProps {
-	unitsType: string;
-	handleTemperatureUnitChange: (unitType: string) => void;
-}
+export const TemperatureButtons: React.FC<ITemperatureButtonsProps> = ({
+	unitsType,
+	handleTemperatureUnitChange,
+	city,
+}) => {
+	const isCityEmpty = !city.trim();
 
-export const TemperatureButtons: React.FC<TemperatureButtonsProps> = ({ unitsType, handleTemperatureUnitChange }) => {
 	return (
-		<div className="temp-buttons">
-			{['metric', 'imperial', 'standard'].map((unit) => (
+		<div className='temp-buttons'>
+			{Object.values(TemperatureUnits).map(unit => (
 				<button
 					key={unit}
-					onClick={() => handleTemperatureUnitChange(unit)}
-					className={unitsType === unit ? 'temp-buttons__item temp-buttons__item--selected' : 'temp-buttons__item'}
+					onClick={() => !isCityEmpty && handleTemperatureUnitChange(unit)}
+					className={
+						unitsType === unit
+							? 'temp-buttons__item temp-buttons__item--selected'
+							: 'temp-buttons__item'
+					}
 				>
-					{unit === 'metric' ? '°C' : unit === 'imperial' ? '°F' : unit === 'standard' ? '°K' : '°C'}
+					{unit === TemperatureUnits.METRIC
+						? '°C'
+						: unit === TemperatureUnits.IMPERIAL
+						? '°F'
+						: unit === TemperatureUnits.STANDARD
+						? '°K'
+						: '°C'}
 				</button>
 			))}
 		</div>
 	);
 };
-
